@@ -73,6 +73,10 @@ RSpec.describe GamesController, type: :request do
   end
 
   describe "#update" do 
+    before do 
+      player1.update(game_id: game.id)
+    end
+    
     it 'checks for the presence of a user email' do 
       patch game_path(game.id)
 
@@ -80,10 +84,39 @@ RSpec.describe GamesController, type: :request do
     end
 
     it 'responds with instructions if user not found' do 
-      patch games_path(email: 'whatever@example.com')
+      patch game_path(game.id), params: { email: 'whatever@example.com' }
 
       expect(response).not_to be_successful
       expect(response.body).to include('Not found; post your email to /users to create a user')
+    end
+
+    it 'responds with congratulations if user has won a game already' do 
+      player1.update(winning_guess: [1, 0])
+
+      expect do 
+        patch game_path(game.id), params: { email: player1.email }
+      end.not_to change(Game, :count)
+
+      expect(response).to have_http_status(200)
+      expect(response.body).to include("Congratulations! It looks like you guessed correctly and are now a permanent winner.")
+    end
+
+    it 'responds with an error if the user has a game and attempts to play a new one' do 
+      other_game = create(:game)
+
+      patch game_path(other_game.id), params: { email: player1.email }
+
+      expect(response).not_to be_successful
+      expect(response).to have_http_status(422)
+      expect(response.body).to include("You're not playing game #{other_game.id}.")
+    end
+
+    it 'checks whether the user has guessed correctly' do 
+      allow(game).to receive(:play).with('1,0').and_call_original
+
+      patch game_path(game.id), params: { email: player1.email, coordinates: '1, 0' } 
+
+      expect(game).to have_received(:play).with('1,0')
     end
   end
 end

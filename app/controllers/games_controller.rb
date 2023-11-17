@@ -1,5 +1,7 @@
 class GamesController < ApplicationController
-  before_action :validate_user_presence, :validate_user_eligibility
+  before_action :validate_user_presence, :validate_user_not_yet_winner
+  before_action :validate_user_not_already_playing, only: [:create]
+  before_action :validate_user_playing_correct_game, only: [:update]
 
   def create
     game = Game.generate_new
@@ -29,7 +31,7 @@ class GamesController < ApplicationController
     end
   end
 
-  def validate_user_eligibility
+  def validate_user_not_yet_winner
     if current_user.winner? 
       render json: 
       {
@@ -41,7 +43,9 @@ class GamesController < ApplicationController
       }, 
       status: 200 and return
     end
+  end
 
+  def validate_user_not_already_playing
     if current_user.game_id
       render json: 
       { 
@@ -49,6 +53,12 @@ class GamesController < ApplicationController
                'with your other params in a PATCH request to resume play.' 
       }, 
       status: 422 and return
+    end
+  end
+
+  def validate_user_playing_correct_game
+    if current_user.game_id != params[:id].to_i
+      render json: { error: "You're not playing game #{params[:id]}." }, status: 422 and return
     end
   end
 
