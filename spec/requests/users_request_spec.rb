@@ -6,15 +6,17 @@ RSpec.describe UsersController, type: :request do
       admin_user = FactoryBot.create(:user, :admin)
       non_admin_user = FactoryBot.create(:user)
 
-      get users_path, headers: { "Authorization" => admin_user.email }
+      get users_path, params: { user: { email: admin_user.email } }
       expect(response).to have_http_status(200)
     end
 
     it "is not accessible to non-admin users" do
       non_admin_user = FactoryBot.create(:user)
 
-      get user_path, headers: {"Authorization" => non_admin_user.email }
-      expec(response).not_to be_successful
+      get users_path, params: { user: { email: non_admin_user.email } }
+      
+      expect(response).not_to be_successful
+      expect(response).to have_http_status(401)
     end
   end
 end
