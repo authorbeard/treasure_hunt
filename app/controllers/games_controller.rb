@@ -10,6 +10,9 @@ class GamesController < ApplicationController
       "Be sure to include your email address, the game id and your coordinates as params, "\
       "using the keys email, game_id, and coordinates. Coordinates should be formatted as a string: 'latitude, longitude'."
     }, status: 201
+
+  rescue Game::GameError 
+    render json: { error: 'Something went wrong. Please try again later.' }, status: 500
   end
 
   private 

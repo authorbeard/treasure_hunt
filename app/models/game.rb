@@ -1,4 +1,5 @@
 class Game < ApplicationRecord
+  class GameError < StandardError; end
   validates :latitude, :longitude, presence: true
 
   reverse_geocoded_by :latitude, :longitude
@@ -6,6 +7,10 @@ class Game < ApplicationRecord
 
   def self.generate_new 
     coordinates = generate_coordinates
+    create!()
+  rescue ActiveRecord::RecordInvalid => e
+    # NOTE: Custom class to keep from rescuing errors we don't know enough yet to rescue from. 
+    raise GameError
   end
 
   # NOTE: Implementation seems likely to change in the future, so I'm moving coordinate generation

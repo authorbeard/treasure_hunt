@@ -15,12 +15,17 @@ RSpec.describe Game do
 
     describe ".generate_new" do 
       it "generates random coordinates" do 
-        game = build(:game)
         allow(Game).to receive(:generate_coordinates).and_call_original
 
         Game.generate_new
 
         expect(Game).to have_received(:generate_coordinates)
+      end
+
+      it "generates a new game using the random coordinates" do 
+        expect do 
+          Game.generate_new
+        end.to change(Game, :count).by(1)
       end
     end
   end

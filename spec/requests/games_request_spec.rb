@@ -47,5 +47,14 @@ RSpec.describe GamesController, type: :request do
         "using the keys email, game_id, and coordinates. Coordinates should be formatted as a string: 'latitude, longitude'."
       )
     end
+
+    it 'returns a generic error if anything goes wrong with game creation' do 
+      allow(Game).to receive(:generate_new).and_raise(Game::GameError)
+
+      post games_path(email: player1.email)
+
+      expect(response).not_to be_successful
+      expect(response.body).to include('Something went wrong. Please try again later.')
+    end
   end
 end
