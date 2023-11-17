@@ -21,4 +21,12 @@ RSpec.describe User, type: :model do
       expect(user.name).to eq('email@example.com')
     end
   end
+
+  describe "#winner?" do 
+    it 'returns true if the user has a winning guess' do 
+      user = create(:user, winning_guess: {lat: 1, lng: 1})
+
+      expect(user.winner?).to be true
+    end
+  end
 end

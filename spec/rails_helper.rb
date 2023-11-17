@@ -92,7 +92,8 @@ Geocoder::Lookup::Test.set_default_stub(
   [
     {
       "coordinates" => [37.7899932, -122.4008494],
-      "address"   => "Change.org, 548, Market Street, Transbay, San Francisco, California, 94104, United States",
+      "address"     => "Change.org, 548, Market Street, Transbay, San Francisco, California, 94104, United States",
+      "name"        => "Flatiron Building"
     }
   ]
 )
