@@ -10,8 +10,7 @@ class UsersController < ApplicationController
   end
 
   def create 
- 
-    if new_user.valid? 
+     if new_user.valid? 
       new_user.save!
       render json: user_created, status: 201
     else
