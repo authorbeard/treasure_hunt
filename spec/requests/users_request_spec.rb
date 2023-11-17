@@ -39,7 +39,7 @@ RSpec.describe UsersController, type: :request do
     it 'includes the user email and instructions for use in the response' do 
       post users_path(email: 'someone@example.com')
 
-      expect(response.body).to include('Include your email as a url param with future guesses')
+      expect(response.body).to include("Welcome, someone@example.com. Include your email as a url param with future guesses")
     end
 
     it 'returns an error if supplied with a non-unique email address' do
