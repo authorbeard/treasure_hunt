@@ -10,13 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_17_031930) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_17_154422) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+  enable_extension "postgis"
+
+  create_table "games", force: :cascade do |t|
+    t.string "name"
+    t.string "address", null: false
+    t.decimal "latitude", null: false
+    t.decimal "longitude", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["latitude", "longitude"], name: "index_games_on_latitude_and_longitude"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "username", null: false
     t.string "email", null: false
-    t.integer "game_id"
     t.json "winning_guesses", default: {}
     t.boolean "notified_of_win", default: false
+    t.bigint "game_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["game_id"], name: "index_users_on_game_id"

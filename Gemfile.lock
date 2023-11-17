@@ -54,6 +54,9 @@ GEM
     activerecord (7.0.8)
       activemodel (= 7.0.8)
       activesupport (= 7.0.8)
+    activerecord-postgis-adapter (8.0.3)
+      activerecord (~> 7.0.0)
+      rgeo-activerecord (~> 7.0.0)
     activestorage (7.0.8)
       actionpack (= 7.0.8)
       activejob (= 7.0.8)
@@ -94,6 +97,7 @@ GEM
       railties (>= 5.0.0)
     faker (3.2.2)
       i18n (>= 1.8.11, < 2)
+    geocoder (1.8.2)
     globalid (1.2.1)
       activesupport (>= 6.1)
     hashdiff (1.0.1)
@@ -128,6 +132,7 @@ GEM
     nio4r (2.6.0)
     nokogiri (1.15.4-x86_64-darwin)
       racc (~> 1.4)
+    pg (1.5.4)
     psych (5.1.1.1)
       stringio
     public_suffix (5.0.3)
@@ -171,6 +176,10 @@ GEM
     reline (0.4.0)
       io-console (~> 0.5)
     rexml (3.2.6)
+    rgeo (3.0.1)
+    rgeo-activerecord (7.0.1)
+      activerecord (>= 5.0)
+      rgeo (>= 1.0.0)
     rspec-core (3.12.2)
       rspec-support (~> 3.12.0)
     rspec-expectations (3.12.3)
@@ -188,7 +197,6 @@ GEM
       rspec-mocks (~> 3.12)
       rspec-support (~> 3.12)
     rspec-support (3.12.1)
-    sqlite3 (1.6.8-x86_64-darwin)
     stringio (3.0.9)
     thor (1.3.0)
     timeout (0.4.1)
@@ -207,15 +215,17 @@ PLATFORMS
   x86_64-darwin-22
 
 DEPENDENCIES
+  activerecord-postgis-adapter
   bootsnap
   database_cleaner
   debug
   factory_bot_rails
   faker
+  geocoder
+  pg
   puma (~> 5.0)
   rails (~> 7.0.8)
   rspec-rails
-  sqlite3 (~> 1.4)
   tzinfo-data
   webmock
 
