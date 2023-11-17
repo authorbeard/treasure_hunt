@@ -36,5 +36,32 @@ RSpec.describe Game do
         end.to raise_error(Game::GameError)
       end
     end
+
+    describe '#play' do 
+      let(:coord_string) { "37.8073262, -122.4754017" }
+      let(:game)         { create(:game) }
+
+      it 'calculates distance from lat, lng string to the game coordinates' do
+        allow(game).to receive(:distance_from).and_call_original
+
+        game.play(coord_string)
+        expect(game).to have_received(:distance_from).with(coord_string.split(',').map(&:to_f))
+      end
+
+      it 'checks that the guess coordinates are within 1km' do 
+        allow(game).to receive(:distance_from).and_return(0.5)
+
+        result = game.play(coord_string)
+        expect(result[:success]).to be true
+      end
+
+      it 'informs the user of how far off they are if they guess incorrectly' do 
+        allow(game).to receive(:distance_from).and_return(5000)
+        
+        result = game.play(coord_string)
+        expect(result[:success]).to be false
+        expect(result[:message]).to include('Sorry, try again. you are 5000km away.')
+      end
+    end
   end
 end

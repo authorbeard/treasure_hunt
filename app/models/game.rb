@@ -18,7 +18,30 @@ class Game < ApplicationRecord
     { latitude: Faker::Address.latitude, longitude: Faker::Address.longitude }
   end
 
+  def play(coord_string)
+    lat, lng = coord_string.split(',').map(&:to_f)
+    distance = distance_from([lat, lng])
+
+    if distance <= 1
+      { success: true, message: winner_message(lat, lng) }
+    else
+      { success: false, message: "Sorry, try again. you are #{distance}km away." }
+    end
+  end
+
+  def geocoder_name(latitude, longitude)
+    result = Geocoder.search([latitude, longitude]).first
+    result.data['name']
+  end
+
+  private 
+
   def update_address_name
     self.name = address.split(',').shift
+  end
+
+  def winner_message(lat, lng)
+    "Congratulations! You guessed correctly. The actual location was latitude: #{lat}, longitude: #{lng}, which is #{name}. "\
+    "You guessed #{lat}, #{lng}, which is #{geocoder_name(lat, lng)}."
   end
 end
