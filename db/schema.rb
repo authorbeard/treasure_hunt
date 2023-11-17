@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_17_175706) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_17_191101) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "postgis"
@@ -26,7 +26,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_17_175706) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "username", null: false
+    t.string "username"
     t.string "email", null: false
     t.json "winning_guesses", default: {}
     t.boolean "notified_of_win", default: false
@@ -34,6 +34,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_17_175706) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "is_admin", default: false
+    t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["game_id"], name: "index_users_on_game_id"
   end
 

@@ -8,8 +8,8 @@ class UsersController < ApplicationController
   end
 
   def create 
-    if user.valid? 
-      user.save!
+    if new_user.valid? 
+      new_user.save!
       render json: user, status: 201
     else
       render json: { error: user.errors.full_messages }, status: 422
@@ -23,7 +23,11 @@ class UsersController < ApplicationController
   # this endpoint for now. 
 
   def user 
-    @user ||= User.find_or_initialize_by(user_params)
+    @user ||= User.find_by(user_params)
+  end
+
+  def new_user
+    @new_user ||= User.new(user_params)
   end
 
   def user_params 

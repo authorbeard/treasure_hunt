@@ -35,5 +35,16 @@ RSpec.describe UsersController, type: :request do
       body = JSON.parse(response.body)
       expect(body['username']).to eq('someone')
     end
+
+    it 'returns an error if supplied with a non-unique email address' do
+      existing_user = create(:user, email: 'notunique@bruh.io', username: 'notunique')
+
+      expect do
+        post users_path(email: 'notunique@bruh.io', username: 'unique')
+      end.not_to change(User, :count)
+
+      expect(response).not_to be_successful
+      expect(response).to have_http_status(422)
+    end
   end
 end
