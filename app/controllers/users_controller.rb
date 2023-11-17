@@ -7,6 +7,15 @@ class UsersController < ApplicationController
     end
   end
 
+  def create 
+    if user.valid? 
+      user.save!
+      render json: user, status: 201
+    else
+      render json: { error: user.errors.full_messages }, status: 422
+    end
+  end
+
   private 
   # NOTE: Because the task description explicitly says to use email as auth, 
   # I'm skipping the usual before_action methods and general pattern here, in favor
@@ -14,10 +23,10 @@ class UsersController < ApplicationController
   # this endpoint for now. 
 
   def user 
-    @user ||= User.find_by(email: user_params[:email])
+    @user ||= User.find_or_initialize_by(user_params)
   end
 
-  def user_params
-    params.require(:user).permit(:email)
+  def user_params 
+    params.permit(:email, :username)
   end
 end
