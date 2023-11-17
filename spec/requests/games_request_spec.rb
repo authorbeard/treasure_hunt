@@ -71,5 +71,13 @@ RSpec.describe GamesController, type: :request do
         "using the keys email, game_id, and coordinates. Coordinates should be formatted as a string: 'latitude, longitude'."
       )
     end
+
+    it 'assigns the player to the newly-created game' do 
+      allow(Game).to receive(:generate_new).and_return(game) 
+
+      post games_path(email: player1.email)
+
+      expect(player1.reload.game_id).to eq(game.id)
+    end
   end
 end

@@ -3,6 +3,7 @@ class GamesController < ApplicationController
 
   def create
     game = Game.generate_new
+    current_user.update(game_id: game.id)
 
     #TODO: Extract this message to its own method or to another class.
     render json: {
