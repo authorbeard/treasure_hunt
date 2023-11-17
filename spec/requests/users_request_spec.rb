@@ -36,6 +36,12 @@ RSpec.describe UsersController, type: :request do
       expect(body['username']).to eq('someone')
     end
 
+    it 'includes the user email and instructions for use in the response' do 
+      post users_path(email: 'someone@example.com')
+
+      expect(response.body).to include('Include your email as a url param with future guesses')
+    end
+
     it 'returns an error if supplied with a non-unique email address' do
       existing_user = create(:user, email: 'notunique@bruh.io', username: 'notunique')
 

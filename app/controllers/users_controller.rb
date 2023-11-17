@@ -10,10 +10,10 @@ class UsersController < ApplicationController
   end
 
   def create 
-    render json: { error: "You need to supply an email address." }, status: 422 and return unless user_params[:email]
+ 
     if new_user.valid? 
       new_user.save!
-      render json: user, status: 201
+      render json: user_created, status: 201
     else
       render json: { error: "There was a problem with your email address." }, status: 401
     end
@@ -35,6 +35,14 @@ class UsersController < ApplicationController
 
   def new_user
     @new_user ||= User.new(user_params)
+  end
+
+  def user_created
+    {
+      message: "Include your email as a url param with future guesses",
+      username: new_user.username,
+      email: new_user.email
+    }
   end
 
   def user_params 
