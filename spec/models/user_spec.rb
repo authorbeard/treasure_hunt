@@ -16,7 +16,7 @@ RSpec.describe User, type: :model do
     end
 
     it "returns the email if username is not present" do
-      user = create(:user, email: 'email@example.com')
+      user = create(:user, email: 'email@example.com', username: nil)
 
       expect(user.name).to eq('email@example.com')
     end
