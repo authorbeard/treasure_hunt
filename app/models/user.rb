@@ -10,4 +10,8 @@ class User < ApplicationRecord
   def winner? 
     winning_guess.present?
   end
+
+  def record_win(coord_string)
+    update(winning_guess: coord_string.split(',').map(&:to_f))
+  end
 end

@@ -112,11 +112,34 @@ RSpec.describe GamesController, type: :request do
     end
 
     it 'checks whether the user has guessed correctly' do 
+      allow(Game).to receive(:find).with(game.id).and_return(game)
       allow(game).to receive(:play).with('1,0').and_call_original
 
-      patch game_path(game.id), params: { email: player1.email, coordinates: '1, 0' } 
+      patch game_path(game.id), params: { email: player1.email, coordinates: '1,0' } 
 
       expect(game).to have_received(:play).with('1,0')
+    end
+
+    it 'informs the user of their distance if they guess incorrectly' do 
+      allow(Game).to receive(:find).with(game.id).and_return(game)
+      allow(game).to receive(:distance_from).and_return(5000)
+
+      patch game_path(game.id), params: { email: player1.email, coordinates: '1,0' }
+
+      expect(response).to be_successful 
+      expect(response.body).to include("Sorry, try again. you are 5000km away.")
+    end
+
+    it 'records the user as a winner if they guess correctly' do
+      allow(Game).to receive(:find).with(game.id).and_return(game)
+      allow(User).to receive(:find_by).and_return(player1)
+      allow(game).to receive(:distance_from).and_return(0.5)
+      allow(player1).to receive(:record_win).and_call_original
+
+      patch game_path(game.id), params: { email: player1.email, coordinates: '1,0' }
+
+      expect(player1).to have_received(:record_win).with('1,0')
+      expect(player1.reload.winner?).to be true
     end
   end
 end

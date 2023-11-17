@@ -19,7 +19,9 @@ class GamesController < ApplicationController
   end
   
   def update 
-    debugger;
+    result = current_game.play(coordinates)
+    current_user.record_win(coordinates) if result[:success]
+    render json: {message: result[:message] }, status: 200
   end
 
   private 
@@ -70,5 +72,9 @@ class GamesController < ApplicationController
 
   def current_game
     @current_game ||= Game.find(current_user.game_id)
+  end
+
+  def coordinates
+    allowed_params[:coordinates]
   end
 end

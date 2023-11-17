@@ -29,4 +29,16 @@ RSpec.describe User, type: :model do
       expect(user.winner?).to be true
     end
   end
+
+  describe "#record_win" do
+    it 'updates the user with the winning guess' do
+      user = create(:user)
+      guess = "1,1"
+
+      user.record_win(guess)
+
+      expect(user.reload.winning_guess).to match_array([1,1])
+      expect(user.winner?).to be true
+    end
+  end
 end
