@@ -27,10 +27,25 @@ RSpec.describe GamesController, type: :request do
     end
 
     it 'creates a new game if the requests passes all validations' do 
-      allow(Game).to receive(:generate_new).and_return(create(:game)) 
+      game = create(:game)
+      allow(Game).to receive(:generate_new).and_return(game) 
       
       post games_path(email: player1.email)
       expect(Game).to have_received(:generate_new)
+    end
+
+    it 'returns the game id and instructions for use in the response' do
+      game = create(:game)
+      allow(Game).to receive(:generate_new).and_return(game) 
+
+      post games_path(email: player1.email)
+
+      expect(response).to be_successful
+      expect(response.body).to include(
+        "Welcome, to game #{game.id}, #{player1.name}. To play, send a PATCH request to /games. "\
+        "Be sure to include your email address, the game id and your coordinates as params, "\
+        "using the keys email, game_id, and coordinates. Coordinates should be formatted as a string: 'latitude, longitude'."
+      )
     end
   end
 end

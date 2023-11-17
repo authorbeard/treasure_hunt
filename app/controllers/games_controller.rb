@@ -3,6 +3,13 @@ class GamesController < ApplicationController
 
   def create
     game = Game.generate_new
+
+    #TODO: Extract this message to its own method or to another class.
+    render json: {
+      message: "Welcome, to game #{game.id}, #{current_user.name}. To play, send a PATCH request to /games. "\
+      "Be sure to include your email address, the game id and your coordinates as params, "\
+      "using the keys email, game_id, and coordinates. Coordinates should be formatted as a string: 'latitude, longitude'."
+    }, status: 201
   end
 
   private 
