@@ -53,4 +53,4 @@ group :test do
   gem "webmock"
   gem "database_cleaner"
 end
-gem "geokit-rails", "~> 2.5"
+

@@ -94,10 +94,6 @@ GEM
       railties (>= 5.0.0)
     faker (3.2.2)
       i18n (>= 1.8.11, < 2)
-    geokit (1.14.0)
-    geokit-rails (2.5.0)
-      geokit (~> 1.5)
-      rails (>= 3.0)
     globalid (1.2.1)
       activesupport (>= 6.1)
     hashdiff (1.0.1)
@@ -216,7 +212,6 @@ DEPENDENCIES
   debug
   factory_bot_rails
   faker
-  geokit-rails (~> 2.5)
   puma (~> 5.0)
   rails (~> 7.0.8)
   rspec-rails
