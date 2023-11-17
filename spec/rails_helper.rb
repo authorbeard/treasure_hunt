@@ -85,3 +85,14 @@ Shoulda::Matchers.configure do |config|
     with.library :rails
   end
 end
+
+Geocoder.configure(lookup: :test)
+
+Geocoder::Lookup::Test.set_default_stub(
+  [
+    {
+      "coordinates" => [37.7899932, -122.4008494],
+      "address"   => "Change.org, 548, Market Street, Transbay, San Francisco, California, 94104, United States",
+    }
+  ]
+)
