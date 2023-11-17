@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
   def index 
-    render json: { message: "Hello, World!" }
+    render json: { message: "UsersController#index" }
   end
 end

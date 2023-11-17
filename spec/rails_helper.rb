@@ -32,16 +32,16 @@ end
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
   config.before(:suite) do
-    DataBaseCleaner.clean_with(:truncation)
-    DataBaseCleaner.strategy = :transaction
+    DatabaseCleaner.clean_with(:truncation)
+    DatabaseCleaner.strategy = :transaction
   end
 
   config.before(:each) do 
-    DataBaseCleaner.start
+    DatabaseCleaner.start
   end
 
   config.after(:each) do
-    DataBaseCleaner.clean
+    DatabaseCleaner.clean
   end
   
   
