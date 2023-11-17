@@ -40,7 +40,7 @@ RSpec.describe UsersController, type: :request do
       existing_user = create(:user, email: 'notunique@bruh.io', username: 'notunique')
 
       expect do
-        post users_path(email: 'notunique@bruh.io', username: 'unique')
+        post users_path(email: existing_user.email, username: 'unique')
       end.not_to change(User, :count)
 
       expect(response).not_to be_successful

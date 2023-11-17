@@ -12,7 +12,7 @@ class UsersController < ApplicationController
       new_user.save!
       render json: user, status: 201
     else
-      render json: { error: user.errors.full_messages }, status: 422
+      render json: { error: new_user.errors.full_messages }, status: 422
     end
   end
 
