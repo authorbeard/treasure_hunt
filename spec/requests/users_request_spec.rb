@@ -46,5 +46,12 @@ RSpec.describe UsersController, type: :request do
       expect(response).not_to be_successful
       expect(response).to have_http_status(401)
     end
+
+    it 'returns an error if the email address param is missing' do 
+      post users_path(username: 'unique')
+  
+      expect(response).to have_http_status(422)
+      expect(response.body).to include('You need to supply an email address.')  
+    end
   end
 end

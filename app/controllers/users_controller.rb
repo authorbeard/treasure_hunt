@@ -1,6 +1,8 @@
 class UsersController < ApplicationController
+  before_action :validate_params
+
   def index
-    if user && user.is_admin 
+    if user.is_admin 
       render json: User.all
     else 
       render json: { error: "Unauthorized" }, status: 401
@@ -8,6 +10,7 @@ class UsersController < ApplicationController
   end
 
   def create 
+    render json: { error: "You need to supply an email address." }, status: 422 and return unless user_params[:email]
     if new_user.valid? 
       new_user.save!
       render json: user, status: 201
@@ -21,6 +24,10 @@ class UsersController < ApplicationController
   # I'm skipping the usual before_action methods and general pattern here, in favor
   # of a boolean (is_admin) that is set in the database, and that's only checked by
   # this endpoint for now. 
+
+  def validate_params 
+    render json: { error: "You need to supply an email address." }, status: 422 and return unless user_params[:email]
+  end
 
   def user 
     @user ||= User.find_by(user_params)
