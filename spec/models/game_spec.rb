@@ -27,6 +27,14 @@ RSpec.describe Game do
           Game.generate_new
         end.to change(Game, :count).by(1)
       end
+
+      it "raises a custom error if anything goes wrong" do
+        allow(Game).to receive(:generate_coordinates).and_return(nil)
+
+        expect do
+          Game.generate_new
+        end.to raise_error(Game::GameError)
+      end
     end
   end
 end

@@ -6,8 +6,7 @@ class Game < ApplicationRecord
   after_validation :reverse_geocode if Proc.new { longitude_changed? || latitude_changed? }
 
   def self.generate_new 
-    coordinates = generate_coordinates
-    create!()
+    create!(generate_coordinates)
   rescue ActiveRecord::RecordInvalid => e
     # NOTE: Custom class to keep from rescuing errors we don't know enough yet to rescue from. 
     raise GameError
