@@ -1,5 +1,4 @@
 class GamesController < ApplicationController
-  def new 
-
+  def create
   end
 end
