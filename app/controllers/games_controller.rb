@@ -7,13 +7,17 @@ class GamesController < ApplicationController
 
     #TODO: Extract this message to its own method or to another class.
     render json: {
-      message: "Welcome, to game #{game.id}, #{current_user.name}. To play, send a PATCH request to /games. "\
-      "Be sure to include your email address, the game id and your coordinates as params, "\
-      "using the keys email, game_id, and coordinates. Coordinates should be formatted as a string: 'latitude, longitude'."
+      message: "Welcome to game #{game.id}, #{current_user.name}. To play, send a PATCH request to /games/#{game.id}. "\
+      "Be sure to include your email address, the game id and your coordinates as params, using the keys 'email' and 'coordinates'. "\
+      "Coordinates should be formatted as a string: 'latitude, longitude'."
     }, status: 201
 
   rescue Game::GameError 
     render json: { error: 'Something went wrong. Please try again later.' }, status: 500
+  end
+  
+  def update 
+    debugger;
   end
 
   private 
@@ -30,9 +34,10 @@ class GamesController < ApplicationController
       render json: 
       {
         message: "Congratulations! It looks like you guessed correctly and are now a permanent winner. "\
-                 "You guessed #{current_user.winning_guess.first}, #{current_user.winning_guess.last}, #{geocoder_name(*current_user.winning_guess)} "\
-                 "The actual location was latitude: #{current_game.latitude}, longitude: #{current_game.longitude}, "\
-                 "#{current_game.address}. If you would like to play again, please register with a different email address."
+                 "You guessed #{current_user.winning_guess.first}, #{current_user.winning_guess.last}, "\
+                 "which is #{geocoder_name(*current_user.winning_guess)}. The actual location was latitude: "\
+                 "#{current_game.latitude}, longitude: #{current_game.longitude}, which is #{current_game.name}. "\
+                 "If you would like to play again, please register with a different email address."
       }, 
       status: 200 and return
     end
@@ -49,7 +54,8 @@ class GamesController < ApplicationController
 
   # TODO: this doesn't really belong here; leaving it here for now for expediency's sake. 
   def geocoder_name(latitude, longitude)
-    Geocoder.search([latitude, longitude]).first.name
+    result = Geocoder.search([latitude, longitude]).first
+    result.data['name']
   end
 
   def current_game
