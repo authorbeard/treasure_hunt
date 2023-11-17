@@ -1,24 +1,18 @@
-# README
+Welcome to Treasure Hunt. For now, all interactions are via the RESTful api, so you'll need to break out your cURLing stones or fire up Postman or, heck, I guess you can just slap URLs into a browser address bar. You're getting back JSON whatever you do. 
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Here's how it works: 
+- create a user profile and get a token: 
 
-Things you may want to cover:
+- make sure you include this token in every request. 
 
-* Ruby version
+- post your guesses to the endpoint, like so: 
 
-* System dependencies
+- If you're within 1 km, you win! You'll get an email acknowledging this fact. I suggest you display it prominently on your LinkedIn account and include it in lieu of a cover letter with all future job applications. 
 
-* Configuration
+- If not, you can try again, though you only get 5 attempts per hour. 
 
-* Database creation
+- If you want to see how you stack up against other winners, you can include your game id (it'll be in the email, though it will also be included in responses to your guesses. 
 
-* Database initialization
+- If you want to see how you stack up against winners for all games evar, just include `all_games=true` with your request. 
 
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+- You can become a winner only once. So if you want to play again, you'll have to use another email address. 
