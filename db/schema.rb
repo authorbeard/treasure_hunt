@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_17_221756) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_18_001753) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "postgis"
@@ -23,6 +23,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_17_221756) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["latitude", "longitude"], name: "index_games_on_latitude_and_longitude"
+  end
+
+  create_table "user_guesses", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_user_guesses_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -38,5 +45,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_17_221756) do
     t.index ["game_id"], name: "index_users_on_game_id"
   end
 
+  add_foreign_key "user_guesses", "users"
   add_foreign_key "users", "games"
 end

@@ -2,6 +2,7 @@ class GamesController < ApplicationController
   before_action :validate_user_presence, :validate_user_not_yet_winner
   before_action :validate_user_not_already_playing, only: [:create]
   before_action :validate_user_playing_correct_game, only: [:update]
+  before_action :validate_user_not_rate_limited, only: [:update]
 
   def create
     game = Game.generate_new
@@ -18,7 +19,8 @@ class GamesController < ApplicationController
     render json: { error: 'Something went wrong. Please try again later.' }, status: 500
   end
   
-  def update 
+  def update
+    debugger; 
     result = current_game.play(coordinates)
     current_user.record_win(coordinates) if result[:success]
     render json: {message: result[:message] }, status: 200
@@ -60,7 +62,18 @@ class GamesController < ApplicationController
 
   def validate_user_playing_correct_game
     if current_user.game_id != params[:id].to_i
-      render json: { error: "You're not playing game #{params[:id]}." }, status: 422 and return
+      render json: { 
+        error: "You're not playing game #{params[:id]}." 
+      }, 
+      status: 429 and return
+    end
+  end
+
+  def validate_user_not_rate_limited
+    if current_user.rate_limited?
+      render json: { 
+        error: "You're out of guesses. Wait a bit and try again. You get 5 perhour" 
+      }, status: 401 and return
     end
   end
 
