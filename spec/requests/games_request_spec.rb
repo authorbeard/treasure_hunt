@@ -112,7 +112,8 @@ RSpec.describe GamesController, type: :request do
     end
 
     it 'returns an error if user has guessed 5 times in the last hour' do 
-      next_available = (Time.now + 1.hour).to_fs(:long)
+      next_available = (Time.zone.now + 1.hour)
+      formatted_next = next_available.localtime.strftime("%a, %B %d, %Y, %H:%M:%S %Z")
       allow(User).to receive(:find_by).and_return(player1)
       allow(player1).to receive(:rate_limited?).and_return(true)
       allow(player1).to receive(:next_available_guess_time).and_return(next_available)
@@ -121,7 +122,7 @@ RSpec.describe GamesController, type: :request do
 
       expect(response).not_to be_successful
       expect(response).to have_http_status(429)
-      expect(response.body).to include("You can try again at #{next_available}" )
+      expect(response.body).to include("Next available: #{formatted_next}" )
     end
 
     it 'logs the current guess' do 
@@ -130,11 +131,11 @@ RSpec.describe GamesController, type: :request do
       allow(player1).to receive(:log_guess).and_call_original
 
       expect do 
-        patch game_path(game.id), params: { email: player1.email }
+        patch game_path(game.id), params: { email: player1.email, coordinates: '1,1'}
       end.to change(player1.user_guesses, :count).by(1)
 
       expect(response).to be_successful
-      expect(plaer1).to have_received(:log_guess)
+      expect(player1).to have_received(:log_guess)
     end
 
     it 'checks whether the user has guessed correctly' do 

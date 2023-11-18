@@ -70,4 +70,14 @@ RSpec.describe User, type: :model do
       expect(user.next_available_guess_time).to be >= next_available_placeholder
     end
   end
+
+  describe "#log_guess" do
+    it 'creates a new user_guess record' do
+      user = create(:user)
+
+      expect do
+        user.log_guess
+      end.to change(UserGuess, :count).by(1)
+    end
+  end
 end

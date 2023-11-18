@@ -14,8 +14,11 @@ class Game < ApplicationRecord
 
   # NOTE: Implementation seems likely to change in the future, so I'm moving coordinate generation
   # here; all the generation really cares about right now is that it gets some coordinates.
+  # Changed from original use of Faker gem for lat & lng to hardcoded coordinates pending 
+  # better solution for randomly generating valid, geocodable lat/lng pairs.
   def self.generate_coordinates
-    { latitude: Faker::Address.latitude, longitude: Faker::Address.longitude }
+
+    { latitude: 37.7899932, longitude: -122.4008494 }
   end
 
   def play(coord_string)
@@ -37,7 +40,8 @@ class Game < ApplicationRecord
   private 
 
   def update_address_name
-    self.name = address.split(',').shift
+    addr = address || geocoder_name(latitude, longitude)
+    self.name = addr.split(',').shift
   end
 
   def winner_message(lat, lng)

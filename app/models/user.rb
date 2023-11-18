@@ -17,8 +17,11 @@ class User < ApplicationRecord
   end
 
   def next_available_guess_time
-    first_in_window = user_guesses.active.order(created_at: :asc).last.created_at
-    (first_in_window + 1.hour).to_fs(:long)
+    user_guesses.active.order(created_at: :asc).last.created_at + 1.hour
+  end
+
+  def log_guess 
+    user_guesses.create
   end
 
   def record_win(coord_string)

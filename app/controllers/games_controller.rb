@@ -70,9 +70,9 @@ class GamesController < ApplicationController
 
   def validate_user_not_rate_limited
     if current_user.rate_limited?
-      next_avail = current_user.next_available_guess_time
+      next_avail = current_user.next_available_guess_time.localtime.strftime("%a, %B %d, %Y, %H:%M:%S %Z")
       render json: { 
-        error: "You're out of guesses. You can try again at #{next_avail}. You get 5 per hour" 
+        error: "You're out of guesses for now. You get 5 per hour. Next available: #{next_avail}." 
       }, status: 429 and return
     
     else
