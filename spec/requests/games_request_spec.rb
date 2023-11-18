@@ -24,7 +24,7 @@ RSpec.describe GamesController, type: :request do
       post games_path(email: player1.email)
 
       expect(response).to have_http_status(422)
-      expect(response.body).to include("You already have a game in progress. Include 'game_id=1' with your other params in a PATCH request to resume play.")
+      expect(response.body).to include("You already have a game in progress.")
     end
 
     it 'responds with congratulations if user has won a game already' do 

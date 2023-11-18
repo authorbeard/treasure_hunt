@@ -23,7 +23,7 @@ class UsersController < ApplicationController
   # this endpoint for now. 
 
   def new_user
-    @new_user ||= User.new(user_params)
+    @new_user ||= User.new(email: allowed_params[:email], username: allowed_params[:username])
   end
 
   def user_created
