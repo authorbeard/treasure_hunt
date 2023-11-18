@@ -111,6 +111,17 @@ RSpec.describe GamesController, type: :request do
       expect(response.body).to include("You're not playing game #{other_game.id}.")
     end
 
+    it 'returns an error if user has guessed 5 times in the last hour' do 
+      allow(User).to receive(:find_by).and_return(player1)
+      allow(player1).to receive(:rate_limited?).and_return(true)
+
+      patch game_path(game.id), params: { email: player1.email }
+
+      expect(response).not_to be_successful
+      expect(response).to have_http_status(429)
+      expect(response.body).to include("You can guess again in #{Time.now + 1.hour}" )
+    end
+
     it 'checks whether the user has guessed correctly' do 
       allow(Game).to receive(:find).with(game.id).and_return(game)
       allow(game).to receive(:play).with('1,0').and_call_original

@@ -41,4 +41,13 @@ RSpec.describe User, type: :model do
       expect(user.winner?).to be true
     end
   end
+
+  describe "#rate_limited?" do
+    it 'returns true if the user has guessed 5 times in the last hour' do
+      user = create(:user)
+      5.times { create(:user_guess, user: user) }
+
+      expect(user.rate_limited?).to be true
+    end
+  end
 end
