@@ -20,7 +20,6 @@ class GamesController < ApplicationController
   end
   
   def update
-    debugger; 
     result = current_game.play(coordinates)
     current_user.record_win(coordinates) if result[:success]
     render json: {message: result[:message] }, status: 200
@@ -65,15 +64,19 @@ class GamesController < ApplicationController
       render json: { 
         error: "You're not playing game #{params[:id]}." 
       }, 
-      status: 429 and return
+      status: 422 and return
     end
   end
 
   def validate_user_not_rate_limited
     if current_user.rate_limited?
+      next_avail = current_user.next_available_guess_time
       render json: { 
-        error: "You're out of guesses. Wait a bit and try again. You get 5 perhour" 
-      }, status: 401 and return
+        error: "You're out of guesses. You can try again at #{next_avail}. You get 5 per hour" 
+      }, status: 429 and return
+    
+    else
+      log_guess
     end
   end
 
@@ -85,6 +88,11 @@ class GamesController < ApplicationController
 
   def current_game
     @current_game ||= Game.find(current_user.game_id)
+  end
+
+  # TODO: This should eventually be extracted to a service object or something similar.
+  def log_guess
+    current_user.log_guess
   end
 
   def coordinates

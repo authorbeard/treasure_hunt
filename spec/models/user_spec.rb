@@ -49,5 +49,25 @@ RSpec.describe User, type: :model do
 
       expect(user.rate_limited?).to be true
     end
+
+    it 'returns false if the user has guessed less than 5 times in the last hour' do 
+      user = create(:user)
+      create(:user_guess, :expired, user:user)
+      4.times { create(:user_guess, user: user) }
+
+      expect(user.rate_limited?).to be false
+
+    end
+  end
+
+  describe "#next_available_guess_time" do 
+    it "if the user is rate_limited, returns the time of the first guess plus one hour and one second" do 
+      user = create(:user)
+      5.times { create(:user_guess, user: user) }
+
+      next_available_placeholder = user.user_guesses.first.created_at
+
+      expect(user.next_available_guess_time).to be >= next_available_placeholder
+    end
   end
 end
