@@ -1,0 +1,4 @@
+class WinNotificationMailer < ApplicationMailer 
+
+
+end

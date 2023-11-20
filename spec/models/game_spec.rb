@@ -48,19 +48,28 @@ RSpec.describe Game do
         expect(game).to have_received(:distance_from).with(coord_string.split(',').map(&:to_f))
       end
 
-      it 'checks that the guess coordinates are within 1km' do 
-        allow(game).to receive(:distance_from).and_return(0.5)
-
-        result = game.play(coord_string)
-        expect(result[:success]).to be true
-      end
-
-      it 'informs the user of how far off they are if they guess incorrectly' do 
+      it 'informs the user of how far off they are if their coordinates are more than 1km away' do 
         allow(game).to receive(:distance_from).and_return(5000)
         
         result = game.play(coord_string)
         expect(result[:success]).to be false
         expect(result[:message]).to include('Sorry, try again. you are 5000km away.')
+      end
+
+      it 'informs the user that they have won if their coordinates are within 1km' do
+        allow(game).to receive(:distance_from).and_return(0.5)
+
+        result = game.play(coord_string)
+        expect(result[:success]).to be true
+        expect(result[:message]).to include('Congratulations! You guessed correctly.')
+      end
+
+      it 'sends the player an email informing them of their win' do
+        allow(game).to receive(:distance_from).and_return(0.5)
+        allow(WinNotificationMailer).to receive(:winner_email).and_call_original
+
+        result = game.play(coord_string)
+        expect(WinNotificationMailer).to have_received(:winner_email).with(game, player, coord_string)
       end
     end
   end

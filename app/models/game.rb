@@ -17,15 +17,15 @@ class Game < ApplicationRecord
   # Changed from original use of Faker gem for lat & lng to hardcoded coordinates pending 
   # better solution for randomly generating valid, geocodable lat/lng pairs.
   def self.generate_coordinates
-
     { latitude: 37.7899932, longitude: -122.4008494 }
   end
 
-  def play(coord_string)
-    lat, lng = coord_string.split(',').map(&:to_f)
+  def play(player_guess_coordinates)
+    lat, lng = player_guess_coordinates.split(',').map(&:to_f)
     distance = distance_from([lat, lng])
 
     if distance <= 1
+      
       { success: true, message: winner_message(lat, lng) }
     else
       { success: false, message: "Sorry, try again. you are #{distance}km away." }
@@ -38,7 +38,7 @@ class Game < ApplicationRecord
   end
 
   private 
-
+  
   def update_address_name
     addr = address || geocoder_name(latitude, longitude)
     self.name = addr.split(',').shift
