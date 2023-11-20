@@ -22,6 +22,7 @@ class GamesController < ApplicationController
   def update
     result = current_game.play(coordinates)
     current_user.record_win(coordinates) if result[:success]
+    send_win_notification(result[:message]) if result[:success]
     render json: {message: result[:message] }, status: 200
   end
 
@@ -97,5 +98,13 @@ class GamesController < ApplicationController
 
   def coordinates
     allowed_params[:coordinates]
+  end
+
+  def send_win_notification(msg)
+    WinNotificationMailer.with(
+      player: current_user,
+      game: current_game,
+      message: msg
+    ).notify_winner.deliver_now
   end
 end

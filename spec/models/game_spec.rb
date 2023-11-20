@@ -63,14 +63,6 @@ RSpec.describe Game do
         expect(result[:success]).to be true
         expect(result[:message]).to include('Congratulations! You guessed correctly.')
       end
-
-      it 'sends the player an email informing them of their win' do
-        allow(game).to receive(:distance_from).and_return(0.5)
-        allow(WinNotificationMailer).to receive(:winner_email).and_call_original
-
-        result = game.play(coord_string)
-        expect(WinNotificationMailer).to have_received(:winner_email).with(game, player, coord_string)
-      end
     end
   end
 end

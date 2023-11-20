@@ -25,8 +25,7 @@ class Game < ApplicationRecord
     distance = distance_from([lat, lng])
 
     if distance <= 1
-      
-      { success: true, message: winner_message(lat, lng) }
+      { success: true, message: winner_message(lat, lng, distance) }
     else
       { success: false, message: "Sorry, try again. you are #{distance}km away." }
     end
@@ -38,14 +37,15 @@ class Game < ApplicationRecord
   end
 
   private 
-  
+
   def update_address_name
     addr = address || geocoder_name(latitude, longitude)
     self.name = addr.split(',').shift
   end
 
-  def winner_message(lat, lng)
+  def winner_message(lat, lng, distance)
     "Congratulations! You guessed correctly. The actual location was latitude: #{lat}, longitude: #{lng}, which is #{name}. "\
-    "You guessed #{lat}, #{lng}, which is #{geocoder_name(lat, lng)}."
+    "You guessed #{lat}, #{lng}, which is #{geocoder_name(lat, lng)}. "\
+    "You were within #{distance}km of the actual location."
   end
 end

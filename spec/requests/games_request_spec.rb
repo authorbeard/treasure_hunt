@@ -168,5 +168,30 @@ RSpec.describe GamesController, type: :request do
       expect(player1).to have_received(:record_win).with('1,0')
       expect(player1.reload.winner?).to be true
     end
+
+    it 'sends the player an email informing them of their win' do
+      allow(Game).to receive(:find).and_return(game)
+      allow(User).to receive(:find_by).and_return(player1)
+      allow(game).to receive(:distance_from).and_return(0.5)
+      allow(WinNotificationMailer).to receive(:notify_winner).and_call_original
+      win_msg = game.send(:winner_message, 1, 0, 0.5)
+
+      expect do 
+        patch game_path(game.id), params: { email: player1.email, coordinates: '1,0' }
+      end.to change{ ActionMailer::Base.deliveries.count }.by(1)
+      
+      
+      # .to have_enqueued_job(ActionMailer::MailDeliveryJob)
+      #    .with(
+      #     'WinNotificationMailer',
+      #     'notify_winner',
+      #     'deliver_now',
+      #     params: { 
+      #       player: player1, 
+      #       game: game, 
+      #       message: win_msg
+      #     }
+      #    )
+    end
   end
 end
