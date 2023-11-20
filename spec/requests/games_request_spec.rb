@@ -179,19 +179,6 @@ RSpec.describe GamesController, type: :request do
       expect do 
         patch game_path(game.id), params: { email: player1.email, coordinates: '1,0' }
       end.to change{ ActionMailer::Base.deliveries.count }.by(1)
-      
-      
-      # .to have_enqueued_job(ActionMailer::MailDeliveryJob)
-      #    .with(
-      #     'WinNotificationMailer',
-      #     'notify_winner',
-      #     'deliver_now',
-      #     params: { 
-      #       player: player1, 
-      #       game: game, 
-      #       message: win_msg
-      #     }
-      #    )
     end
   end
 end

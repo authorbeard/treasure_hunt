@@ -3,6 +3,7 @@ class User < ApplicationRecord
   has_many :user_guesses
 
   validates :email, presence: true, uniqueness: true
+  scope :winners, ->{ where.not(winning_guess: nil) }
 
   def name
     username || email

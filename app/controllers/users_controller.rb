@@ -3,7 +3,7 @@ class UsersController < ApplicationController
     if current_user.is_admin 
       render json: User.all
     else 
-      render json: { error: "Unauthorized" }, status: 401
+      render json: User.winners
     end
   end
 
