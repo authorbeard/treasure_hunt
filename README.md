@@ -52,3 +52,4 @@ That's all there is to it.
 	curl -X GET -H "Content-Type: application/json" -H "Cache-Control: no-cache" "http://localhost:3000/usersemail=somebodyelse@example.com"
 	
   ```
+5. This game does not really resemble a treasure hunt in any meaningful fasion, but that's the first name that occurred to me, and it seemed good enough at the time. *shrug*

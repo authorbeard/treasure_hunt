@@ -15,10 +15,10 @@ RSpec.describe User, type: :model do
       expect(user.name).to eq('someone')
     end
 
-    it "returns the email if username is not present" do
+    it "returns the user's email, without the domain, username is not present" do
       user = create(:user, email: 'email@example.com', username: nil)
 
-      expect(user.name).to eq('email@example.com')
+      expect(user.name).to eq('email')
     end
   end
 
@@ -78,6 +78,14 @@ RSpec.describe User, type: :model do
       expect do
         user.log_guess
       end.to change(UserGuess, :count).by(1)
+    end
+  end
+
+  describe "#email_handle" do
+    it "strips the domain from the user's email" do
+      user = create(:user, email: 'someone@example.com')
+
+      expect(user.email_handle).to eq('someone')
     end
   end
 end

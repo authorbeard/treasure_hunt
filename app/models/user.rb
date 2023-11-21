@@ -6,7 +6,7 @@ class User < ApplicationRecord
   scope :winners, ->{ where.not(winning_guess: nil) }
 
   def name
-    username || email
+    username || email_handle
   end
 
   def winner? 
@@ -27,5 +27,9 @@ class User < ApplicationRecord
 
   def record_win(coord_string)
     update(winning_guess: coord_string.split(',').map(&:to_f))
+  end
+
+  def email_handle 
+    @email_handle ||= email.split('@').shift
   end
 end
