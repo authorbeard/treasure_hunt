@@ -25,7 +25,7 @@ class Game < ApplicationRecord
     distance = distance_from([lat, lng])
 
     if distance <= 1
-      { success: true, message: winner_message(lat, lng, distance) }
+      { success: true,  message: winner_message(lat, lng, distance), distance: distance }
     else
       { success: false, message: "Sorry, try again. you are #{distance}km away." }
     end

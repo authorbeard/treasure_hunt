@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_11_20_030830) do
+ActiveRecord::Schema[7.0].define(version: 2023_11_21_225616) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "postgis"
@@ -36,11 +36,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_11_20_030830) do
     t.string "username"
     t.string "email", null: false
     t.json "winning_guess"
-    t.boolean "notified_of_win", default: false
     t.bigint "game_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "is_admin", default: false
+    t.float "winning_distance"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["game_id"], name: "index_users_on_game_id"
   end

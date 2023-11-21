@@ -3,7 +3,7 @@ class UsersController < ApplicationController
     if current_user.is_admin 
       render json: User.all
     else 
-      render json: User.winners
+      render json: User.formatted_winners
     end
   end
 

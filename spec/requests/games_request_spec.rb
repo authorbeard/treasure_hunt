@@ -165,8 +165,19 @@ RSpec.describe GamesController, type: :request do
 
       patch game_path(game.id), params: { email: player1.email, coordinates: '1,0' }
 
-      expect(player1).to have_received(:record_win).with('1,0')
+      expect(player1).to have_received(:record_win).with('1,0', 0.5)
       expect(player1.reload.winner?).to be true
+    end
+
+    it "records how close the user's winning guess was" do 
+      allow(Game).to receive(:find).with(game.id).and_return(game)
+      allow(User).to receive(:find_by).and_return(player1)
+      allow(game).to receive(:distance_from).and_return(0.5)
+      allow(player1).to receive(:record_win).and_call_original
+
+      expect do 
+        patch game_path(game.id), params: { email: player1.email, coordinates: '1,0' }
+      end.to change(player1, :winning_distance).from(nil).to(0.5)
     end
 
     it 'sends the player an email informing them of their win' do

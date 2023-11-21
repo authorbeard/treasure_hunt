@@ -7,6 +7,20 @@ RSpec.describe User, type: :model do
     it { should validate_presence_of(:email) }
     it { should validate_uniqueness_of(:email) }
   end
+  
+  describe '.formatted_winners' do 
+    let!(:winner) { create(:user, username: nil, email: 'winner@example.com', winning_guess: [1, 1], winning_distance: 0.5) }
+    let!(:loser)  { create(:user) }
+
+    it 'includes the username and winning distance' do
+      expect(User.formatted_winners).to include({name: winner.name, winning_distance: winner.winning_distance})
+      expect(User.formatted_winners).not_to include({name: loser.name, winning_distance: loser.winning_distance})    
+    end
+
+    it 'uses the User#name method if User#username is nil' do 
+      expect(User.formatted_winners.first[:name]).to eq('winner')
+    end
+  end
 
   describe "#name" do 
     it "returns the username if present" do
@@ -31,11 +45,11 @@ RSpec.describe User, type: :model do
   end
 
   describe "#record_win" do
-    it 'updates the user with the winning guess' do
+    it 'updates the user with the winning guess and distance from target' do
       user = create(:user)
       guess = "1,1"
 
-      user.record_win(guess)
+      user.record_win(guess, 0.5)
 
       expect(user.reload.winning_guess).to match_array([1,1])
       expect(user.winner?).to be true
