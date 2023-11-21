@@ -28,7 +28,7 @@ class UsersController < ApplicationController
 
   def user_created
     {
-      message: "Welcome, #{new_user.name}. Include your email as a url param with future guesses",
+      message: "Welcome, #{new_user.email}. Include your email as a url param with future guesses",
       username: new_user.username,
       email: new_user.email
     }

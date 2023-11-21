@@ -17,15 +17,15 @@ RSpec.describe UsersController, type: :request do
     end
 
     it "lists winners if the user is not an admin" do
-      winners = User.limit(5).tap{ |u| u.update(winning_guess: [1, 0]) }
+      winners = User.limit(5).tap{ |u| u.update(winning_guess: [1, 0], winning_distance: rand(10).to_f/10) }
       loser = User.where(winning_guess: nil).first
 
       get users_path, params: { email: non_admin_user.email } 
 
       expect(response).to be_successful
-      ids = JSON.parse(response.body).map{ |u| u['id'] }  
-      expect(ids).to match_array(winners.map(&:id) )
-      expect(ids).not_to include(loser.id)
+      names = JSON.parse(response.body).map{ |u| u['name'] }  
+      expect(names).to match_array(winners.map(&:name) )
+      expect(names).not_to include(loser.name)
     end
   end
 
