@@ -26,7 +26,7 @@ Optionally include sorting options (ascending, descending) and pagination.
 ## Testing:
 Write tests to ensure the correctness of your API endpoints.
 
-##T echnology Stack:
+## Technology Stack:
 Use Ruby on Rails as the web framework.
 Choose a suitable database or data store (e.g., PostgreSQL, MySQL) for storing game data
 securely.
