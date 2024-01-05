@@ -1,3 +1,11 @@
+***************************************************  
+###### **Disclaimer**: This repo was created as a code challenge for a potential employer. That means it's generally one- or two-pass work, to an MVP level; either it has been timeboxed in the original description or I have set what I regard as reasonable limits. It is uncompensated work, after all, and frequently goes well beyond the scope that would be acceptable for a ticket in any of the places I've worked before. It frequently lacks requirements or acceptance criteria, too, so I try to make reasonable guesses to fill in the gaps. 
+
+###### At any rate, you can find the task's description at -- get this -- [description.md, in the root directory](./description.md).
+*************************************************** 
+
+
+
 Welcome to Treasure Hunt. For now, all interactions are via the RESTful api, so you'll need to break out your cURLing stones or fire up Postman or, heck, I guess you can just slap URLs into a browser address bar. You're getting back JSON whatever you do. 
 
 ### Dependencies
