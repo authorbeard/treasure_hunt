@@ -17,7 +17,9 @@ That will seed the database with the following users:
 - current player: `player1@example.com`, game_id: 1
 - rate-limited current player: `rate_limited@example.com`, game_id: 1
 
-You can, of course, create new players by following the instructions below.  
+You can, of course, create new players by following the instructions below. 
+
+*Additionally*, [This migration should ensure that the postgis extension to Postgres has been enabled](https://github.com/authorbeard/treasure_hunt/blob/6a5ecd684bc9afa541a0ba1637d6e98f1ac6de80/db/migrate/20231117154305_enable_postgis.rb#L1); if you get errors relating to geolocation, something might have gotten screwed up here; you can always trash the db/schema.rb file and start over with migrations if need be. There's not a whole heck of a lot going on in the db as yet.
 
 ### Playing
 
