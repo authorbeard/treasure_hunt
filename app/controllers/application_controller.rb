@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::API
+  before_action :ensure_email
   before_action :ensure_user
 
   private 
@@ -9,12 +10,16 @@ class ApplicationController < ActionController::API
   # Not enough information yet to begin implementing proper auth, including 
   # whether anyting appropriately robust is needed. 
 
-  def ensure_user
-    render json: { error: "You need to supply an email address." }, status: 422 and return unless permitted_params[:email]
+  def ensure_email
+    render json: { error: I18n.t('.errors.need_email') }, status: 422 and return unless permitted_params[:email]
   end
 
-  def current_user 
-    @user ||= User.find_by(email: permitted_params[:email])
+  def ensure_user
+    render json: { error: I18n.t('.errors.not_found') }, status: 404 and return unless current_user.presence
+  end
+
+  def current_user
+    @current_user ||= User.find_by(email: permitted_params[:email])
   end
 
   def permitted_params

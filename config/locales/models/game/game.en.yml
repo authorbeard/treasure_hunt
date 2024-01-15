@@ -1,5 +1,9 @@
 en:
   game: 
     errors: 
+      game_in_progress: "You already have a game in progress. Include 'game_id=%{game_id}' with your other params in a PATCH request to resume play." 
       too_far: "Sorry, try again. you are %{distance}km away." 
+      wrong_game: "You're not playing game %{params[:id]}."
+    permanent_winner: "Congratulations! It looks like you guessed correctly and are now a permanent winner. You guessed %{winning_lat}, %{winning_lng}, which is %{geo_name}. The actual location was latitude: %{game_lat}, longitude: %{game_lng}, which is #{current_game.name}. If you would like to play again, please register with a different email address."
+    welcome: "Welcome to game %{game_id}, %{name}. To play, send a PATCH request to /games/%{game_id}. Be sure to include your email address, the game id and your coordinates as params, using the keys 'email' and 'coordinates'. Coordinates should be formatted as a string: 'latitude, longitude'."
     winner: "Congratulations! You guessed correctly. The actual location was latitude: %{lat}, longitude: %{lng}, which is %{name}. You guessed %{lat}, #{lng}, which is %{geo_name}. You were within %{distance}km of the actual location."

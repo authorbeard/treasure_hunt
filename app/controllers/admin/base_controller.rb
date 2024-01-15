@@ -3,11 +3,7 @@ class Admin::BaseController < ApplicationController
   
   private 
 
-  def admin_user 
-    @admin_user ||= User.admin.find_by(email: permitted_params[:email])
-  end
-
   def validate_admin
-    render json: :bad_request and return unless admin_user
+    render json: { error: "You are not authorized to access this page." }, status: 401 and return unless current_user.is_admin
   end
 end

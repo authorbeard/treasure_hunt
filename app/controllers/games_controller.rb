@@ -1,8 +1,8 @@
 class GamesController < ApplicationController
-  before_action :validate_user_presence, :validate_user_not_yet_winner
+  # before_action :validate_user_not_yet_winner
   before_action :validate_user_not_already_playing, only: [:create]
-  before_action :validate_user_playing_correct_game, only: [:update]
-  before_action :validate_user_not_rate_limited, only: [:update]
+  # before_action :validate_user_playing_correct_game, only: [:update]
+  # before_action :validate_user_not_rate_limited, only: [:update]
 
   def create
     game = Game.generate_new
@@ -10,51 +10,60 @@ class GamesController < ApplicationController
 
     #TODO: Extract this message to its own method or to another class.
     render json: {
-      message: "Welcome to game #{game.id}, #{current_user.name}. To play, send a PATCH request to /games/#{game.id}. "\
-      "Be sure to include your email address, the game id and your coordinates as params, using the keys 'email' and 'coordinates'. "\
-      "Coordinates should be formatted as a string: 'latitude, longitude'."
+      message: I18n.t('.models.game.welcome'), game_id: game.id, name: current_user.name,
     }, status: 201
 
   rescue Game::GameError 
-    render json: { error: 'Something went wrong. Please try again later.' }, status: 500
+    render json: { error: I18n.t('errors.generic_500') }, status: 500
   end
   
   def update
-    result = current_game.play(coordinates)
-    current_user.record_win(coordinates, result[:distance]) if result[:success]
-    send_win_notification(result[:message]) if result[:success]
-    render json: {message: result[:message] }, status: 200
+    game_status = play_game 
+
+    if game_status.sucess
+      render json: { message: game_status.message }, status: 200
+    else
+      render json: { error: game_status.message }, status: game_status.status
+    end
+
+    # result = current_game.play(coordinates)
+    # current_user.record_win(coordinates, result[:distance]) if result[:success]
+    # send_win_notification(result[:message]) if result[:success]
+    # render json: {message: result[:message] }, status: 200
   end
 
   private 
 
-  #TODO: extract error messages, possibly all error handling, to separate module, then internationalize messages
-  def validate_user_presence
-    if current_user.nil?
-      render json: { error: 'Not found; post your email to /users to create a user' }, status: 422 and return 
-    end
-  end
+  # #TODO: extract error messages, possibly all error handling, to separate module, then internationalize messages
+  # def validate_user_presence
+  #   if current_user.nil?
+  #     debugger;
+  #     render json: { error: 'Not found; post your email to /users to create a user' }, status: 422 and return 
+  #   end
+  # end
 
-  def validate_user_not_yet_winner
-    if current_user.winner? 
-      render json: 
-      {
-        message: "Congratulations! It looks like you guessed correctly and are now a permanent winner. "\
-                 "You guessed #{current_user.winning_guess.first}, #{current_user.winning_guess.last}, "\
-                 "which is #{geocoder_name(*current_user.winning_guess)}. The actual location was latitude: "\
-                 "#{current_game.latitude}, longitude: #{current_game.longitude}, which is #{current_game.name}. "\
-                 "If you would like to play again, please register with a different email address."
-      }, 
-      status: 200 and return
-    end
-  end
+  # def validate_user_not_yet_winner
+  #   if current_user.winner? 
+  #     render json: 
+  #     {
+  #       message: I18n.t(
+  #         'game.permanent_winner',
+  #         winning_lat: current_user.winning_guess.first, 
+  #         winning_lng: current_user.winning_guess.last,
+  #         geo_name: geocoder_name(current_user.winning_guess),
+  #         game_lat: current_game.latitude,
+  #         game_lng: current_game.longitude
+  #       )
+  #     }, 
+  #     status: 200 and return
+  #   end
+  # end
 
   def validate_user_not_already_playing
     if current_user.game_id
       render json: 
       { 
-        error: "You already have a game in progress. Include 'game_id=#{current_user.game_id}' " \
-               'with your other params in a PATCH request to resume play.' 
+        error: I18n.t('game.errors.game_in_progress', game_id: current_user.game_id)
       }, 
       status: 422 and return
     end
@@ -63,7 +72,7 @@ class GamesController < ApplicationController
   def validate_user_playing_correct_game
     if current_user.game_id != params[:id].to_i
       render json: { 
-        error: "You're not playing game #{params[:id]}." 
+        error: I18n.t('game.errors.wrong_game', game_id: params[:id]) 
       }, 
       status: 422 and return
     end
@@ -109,6 +118,10 @@ class GamesController < ApplicationController
   end
 
   def permitted_params
-    params.permit(:coordinates)
+    params.permit(:email, :coordinates)
+  end
+
+  def play_game 
+    GamePlayService.play(current_game, current_user, coordinates)
   end
 end
