@@ -1,9 +1,15 @@
 class ApplicationController < ActionController::API
-  before_action :check_for_user_params
+  before_action :ensure_user
 
   private 
   
-  def check_for_user_params
+  # NOTE: Only checking that request includes valid email address for now, 
+  # as this is an MVP version and only the presence of a registered email 
+  # address is mentioned in the params. 
+  # Not enough information yet to begin implementing proper auth, including 
+  # whether anyting appropriately robust is needed. 
+
+  def ensure_user
     render json: { error: "You need to supply an email address." }, status: 422 and return unless permitted_params[:email]
   end
 
@@ -12,6 +18,6 @@ class ApplicationController < ActionController::API
   end
 
   def permitted_params
-    params.permit(:email, :username, :coordinates)
+    params.permit(:email)
   end
 end

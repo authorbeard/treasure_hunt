@@ -1,10 +1,10 @@
 class UsersController < ApplicationController
   def index
-    # if current_user.is_admin 
-    #   render json: User.all
-    # else 
-      render json: winners? ? User.formatted_winners : User.all
-    # end
+    if winners?
+      render json: User.formatted_winners
+    else
+      handle_index_request
+    end
   end
 
   def create 
@@ -17,11 +17,7 @@ class UsersController < ApplicationController
   end
 
   private 
-  # NOTE: Because the task description explicitly says to use email as auth, 
-  # I'm skipping the usual before_action methods and general pattern here, in favor
-  # of a boolean (is_admin) that is set in the database, and that's only checked by
-  # this endpoint for now. 
-
+  
   def new_user
     @new_user ||= User.new(email: permitted_params[:email], username: permitted_params[:username])
   end
@@ -35,10 +31,22 @@ class UsersController < ApplicationController
   end
 
   def permitted_params
-    params.permit(:filters)
+    params.permit(:email, :username, :filters)
   end
 
   def winners?
     permitted_params[:filters] == 'winners'
+  end
+
+  def formatted_current_user
+    current_user.attributes.except('id', 'created_at', 'updated_at').to_json
+  end
+
+  def handle_index_request
+    if current_user.is_admin 
+      redirect_to admin_users_url and return
+    else
+      render json: formatted_current_user
+    end
   end
 end 

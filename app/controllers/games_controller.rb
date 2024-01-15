@@ -107,4 +107,8 @@ class GamesController < ApplicationController
       message: msg
     ).notify_winner.deliver_now
   end
+
+  def permitted_params
+    params.permit(:coordinates)
+  end
 end
