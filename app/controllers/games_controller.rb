@@ -97,7 +97,7 @@ class GamesController < ApplicationController
   end
 
   def coordinates
-    allowed_params[:coordinates]
+    permitted_params[:coordinates]
   end
 
   def send_win_notification(msg)

@@ -1,10 +1,10 @@
 class UsersController < ApplicationController
   def index
-    if current_user.is_admin 
-      render json: User.all
-    else 
-      render json: User.formatted_winners
-    end
+    # if current_user.is_admin 
+    #   render json: User.all
+    # else 
+      render json: winners? ? User.formatted_winners : User.all
+    # end
   end
 
   def create 
@@ -23,7 +23,7 @@ class UsersController < ApplicationController
   # this endpoint for now. 
 
   def new_user
-    @new_user ||= User.new(email: allowed_params[:email], username: allowed_params[:username])
+    @new_user ||= User.new(email: permitted_params[:email], username: permitted_params[:username])
   end
 
   def user_created
@@ -33,4 +33,12 @@ class UsersController < ApplicationController
       email: new_user.email
     }
   end
-end
+
+  def permitted_params
+    params.permit(:filters)
+  end
+
+  def winners?
+    permitted_params[:filters] == 'winners'
+  end
+end 

@@ -1,0 +1,5 @@
+en:
+  game: 
+    errors: 
+      too_far: "Sorry, try again. you are %{distance}km away." 
+    winner: "Congratulations! You guessed correctly. The actual location was latitude: %{lat}, longitude: %{lng}, which is %{name}. You guessed %{lat}, #{lng}, which is %{geo_name}. You were within %{distance}km of the actual location."

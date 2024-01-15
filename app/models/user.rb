@@ -4,6 +4,7 @@ class User < ApplicationRecord
 
   validates :email, presence: true, uniqueness: true
   scope :winners, ->{ where.not(winning_guess: nil) }
+  scope :admin, -> { where(is_admin: true) }
 
   #NOTE: This name is not very good but I can't think of a better one right now. 
   def self.formatted_winners 

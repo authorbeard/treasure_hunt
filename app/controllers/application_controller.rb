@@ -4,14 +4,14 @@ class ApplicationController < ActionController::API
   private 
   
   def check_for_user_params
-    render json: { error: "You need to supply an email address." }, status: 422 and return unless allowed_params[:email]
+    render json: { error: "You need to supply an email address." }, status: 422 and return unless permitted_params[:email]
   end
 
   def current_user 
-    @user ||= User.find_by(email: allowed_params[:email])
+    @user ||= User.find_by(email: permitted_params[:email])
   end
 
-  def allowed_params
+  def permitted_params
     params.permit(:email, :username, :coordinates)
   end
 end
