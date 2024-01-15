@@ -3,29 +3,33 @@ require 'rails_helper'
 RSpec.describe UsersController, type: :request do
   describe '#index' do 
     let(:admin_user)     { FactoryBot.create(:user, :admin) }
-    let(:non_admin_user) { FactoryBot.create(:user) }
+    let!(:non_admin_user) { FactoryBot.create(:user) }
+    let!(:winner)         { FactoryBot.create(:user, :winner) }
+    let!(:non_winnner)    { FactoryBot.create(:user) }
 
-    before do 
-      10.times { FactoryBot.create(:user) }
-    end
-
-    it "lists all users when admin user requests with just email" do 
-      get users_path, params: { email: admin_user.email } 
+    it "lists winning users if the user is registered and includes the winners filter" do 
+      get users_path, params: { email: non_admin_user.email, filters: 'winners' } 
 
       expect(response).to have_http_status(200)
-      expect(response.body).to include(User.all.to_json)
+      expect(response.body).to include(
+        { 
+          name: winner.name, 
+          winning_distance: winner.winning_distance
+        }.to_json
+      )
     end
 
-    it "lists winners if the user is not an admin" do
-      winners = User.limit(5).tap{ |u| u.update(winning_guess: [1, 0], winning_distance: rand(10).to_f/10) }
-      loser = User.where(winning_guess: nil).first
-
+    it "for non-admin users without the winners filter, returns a user's info" do
       get users_path, params: { email: non_admin_user.email } 
 
       expect(response).to be_successful
-      names = JSON.parse(response.body).map{ |u| u['name'] }  
-      expect(names).to match_array(winners.map(&:name) )
-      expect(names).not_to include(loser.name)
+      expect(JSON.parse(response.body)).to match_array(non_admin_user.attributes.except('id', 'created_at', 'updated_at'))
+    end
+
+    it "for admin users without the winners filter, redirects to admin users controller" do 
+      get users_path, params: { email: admin_user.email }
+
+      expect(response.status).to eq(302)
     end
   end
 

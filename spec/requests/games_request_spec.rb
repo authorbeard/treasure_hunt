@@ -15,7 +15,7 @@ RSpec.describe GamesController, type: :request do
       post games_path(email: 'whatever@example.com')
 
       expect(response).not_to be_successful
-      expect(response.body).to include('Not found; post your email to /users to create a user')
+      expect(response.body).to include("You need to supply an email address.")
     end
 
     it 'responds with instructions if user has a game in progress already' do 

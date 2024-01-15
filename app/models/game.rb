@@ -27,7 +27,7 @@ class Game < ApplicationRecord
     if distance <= 1
       { success: true,  message: winner_message(lat, lng, distance), distance: distance }
     else
-      { success: false, message: "Sorry, try again. you are #{distance}km away." }
+      { success: false, message: I18n.t('.game.errors.too_far', distance: distance)}
     end
   end
 
@@ -44,8 +44,7 @@ class Game < ApplicationRecord
   end
 
   def winner_message(lat, lng, distance)
-    "Congratulations! You guessed correctly. The actual location was latitude: #{lat}, longitude: #{lng}, which is #{name}. "\
-    "You guessed #{lat}, #{lng}, which is #{geocoder_name(lat, lng)}. "\
-    "You were within #{distance}km of the actual location."
+    geo_name = geocoder_name(lat, lng)
+    I18n.t('.game.winner', lat: lat, lng: lng, distance: distance, geo_name: geo_name, name: name)
   end
 end
